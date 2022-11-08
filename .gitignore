@@ -1,3 +1,4 @@
 .idea/
+__pycache__/
 recursos/minsa/*
 recursos/senamhi/*

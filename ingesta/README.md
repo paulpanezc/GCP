@@ -1,4 +1,4 @@
-1.- Ejecutar el script para descargar el csv que contiene la data climatológica de senamhi por código de estación, año y mes
+1.- Ejecutar el script para descargar el csv que contiene la data climatológica de SENAMHI por código de estación, año y mes
 
 > python parseo_html.py
 

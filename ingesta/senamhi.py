@@ -2,6 +2,7 @@ import csv
 import sys
 from bs4 import BeautifulSoup
 import requests
+from storage import Storage
 
 
 estaciones = {
@@ -19,7 +20,7 @@ estaciones = {
 
 
 def ubigeo(departamento, provincia, distrito):
-    with open("../recursos/TB_UBIGEOS.csv", "r") as archivo_csv:
+    with open("../recursos/TB_UBIGEOS.csv", "r", encoding="utf8") as archivo_csv:
         data = archivo_csv.read()
     data = list(data.split("\n"))
     for fila in data:
@@ -101,8 +102,12 @@ def main():
                 for mes in range(1, mes_final + 1):
                     periodo = "{}{}".format(anio, str(mes).zfill(2))
                     contenido += parseo(tipo_estacion, fila[0], periodo, fila[1])
-        with open(destino, 'wb') as f:
-            f.write(contenido.encode())
+        f = open(destino, 'wb')
+        f.write(contenido.encode())
+        f.close()
+        cloud = Storage()
+        bucket = cloud.crear_bucket(cloud.client.project)
+        cloud.subir_archivo(bucket, archivo, destino)
     else:
         print("Tipo de estación no admitido.")
 

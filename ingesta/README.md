@@ -10,6 +10,6 @@ Automáticas-Meteorológicas (EMA) de la región PUNO, para el año 2022 mes de 
 
 3.- Ejecutar el script para descargar los pdfs y guardar en formato csv la data sobre defunciones notificadas por 
 neumonias en menores de 5 años que reporta el Centro Nacional de Epidemiologia, Prevención y Control de Enfermedades 
-(CDC) - MINSA, para el año 2022 hasta la semana epidemiológica 44
+(CDC) - MINSA, para el año 2022 hasta la semana epidemiológica 45
 
-> python minsa.py 2022 44
+> python minsa.py 2022 45

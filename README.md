@@ -1,4 +1,4 @@
-PROYECTO PARA ANALIZAR LA MORTALIDAD POR NEUMONIA EN MENORES DE 5 AÑOS A CAUSA DE LAS HELADAS EN LA REGION DE PUNO
+PROYECTO PARA ANALIZAR LA MORTALIDAD EN MENORES DE 5 AÑOS POR NEUMONIA DEBIDO A HELADAS EN LA REGION DE PUNO
 
 1.- Instalar las dependencias con el comando
 
@@ -11,3 +11,5 @@ PROYECTO PARA ANALIZAR LA MORTALIDAD POR NEUMONIA EN MENORES DE 5 AÑOS A CAUSA 
 3.- Declarar la variable de entorno GOOGLE_APPLICATION_CREDENTIALS apuntando a la ubicación del archivo json que contiene las credenciales
 
 4.- Seguir los pasos declarados en el directorio ingesta
+
+5.- Seguir los pasos declarados en el directorio procesamiento

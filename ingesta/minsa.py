@@ -3,6 +3,7 @@ import sys
 from PyPDF2 import PdfReader
 from PyPDF2.errors import PdfReadError
 import requests
+from storage import Storage
 
 
 filas_no_permitidas = ["RIESGOCasos,Notificados,de,DEFUNCIONES,notificadas,por,neumonías,(Intra,y,Extra,Hospitalarias)"
@@ -192,8 +193,13 @@ def main():
             f.write(r.content)
         fecha_inicio, fecha_fin = fechas(semana)
         contenido += parseo(archivo_destino, semana, fecha_inicio, fecha_fin)
-    with open("../recursos/minsa/minsa.csv", 'wb') as f:
+    archivo = "minsa.csv"
+    destino = "../recursos/minsa/{}".format(archivo)
+    with open(destino, 'wb') as f:
         f.write(contenido.encode())
+    cloud = Storage()
+    bucket = cloud.crear_bucket(cloud.client.project)
+    cloud.subir_archivo(bucket, archivo, destino)
 
 
 if __name__ == "__main__":

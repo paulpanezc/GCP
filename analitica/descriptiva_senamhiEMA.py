@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-df = pd.read_csv("../recursos/senamhi/SenamhiEMA_limpio.txt", sep="|")
+df = pd.read_csv("../recursos/senamhi/SenamhiEMA_limpio_2.txt", sep="|")
 print(type(df))
 print(df.shape)
 print(df.head())

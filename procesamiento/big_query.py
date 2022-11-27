@@ -35,6 +35,7 @@ class BigQuery:
             autodetect=True,
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
         )
         load_job = self.client.load_table_from_uri(
             uri, tabla_id, job_config=job_config

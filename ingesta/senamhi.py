@@ -8,12 +8,16 @@ from storage import Storage
 estaciones = {
     "CO": {
         "estado": "REAL",
-        "cabecera": "Estación,Ubigeo,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,"
+        # "cabecera": "Estación,Ubigeo,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,"
+        #             "TemperaturaMax(°C),TemperaturaMin(°C),HumedadRelativa(%),Precipitacion(mm/día)\n"
+        "cabecera": "Estación,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,"
                     "TemperaturaMax(°C),TemperaturaMin(°C),HumedadRelativa(%),Precipitacion(mm/día)\n"
     },
     "EMA": {
         "estado": "AUTOMATICA",
-        "cabecera": "Estación,Ubigeo,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,Hora,"
+        # "cabecera": "Estación,Ubigeo,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,Hora,"
+        #             "Temperatura(°C),Precipitación(mm/hora),Humedad(%),DirecciónDelViento(°),VelocidadDelViento(m/s)\n"
+        "cabecera": "Estación,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,Hora,"
                     "Temperatura(°C),Precipitación(mm/hora),Humedad(%),DirecciónDelViento(°),VelocidadDelViento(m/s)\n"
     }
 }
@@ -44,7 +48,7 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
     departamento = tabla_datos("tr")[1]("td")[1].text
     provincia = tabla_datos("tr")[1]("td")[3].text
     distrito = tabla_datos("tr")[1]("td")[5].text
-    ubigeo_id = ubigeo(departamento, provincia, distrito)
+    # ubigeo_id = ubigeo(departamento, provincia, distrito)
     latitud = tabla_datos("tr")[2]("td")[1].text
     longitud = tabla_datos("tr")[2]("td")[3].text
     altitud = tabla_datos("tr")[2]("td")[5].text
@@ -60,12 +64,17 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
                 temperatura_min = fila("td")[2].text.strip()
                 humedad = fila("td")[3].text.strip()
                 precipitacion = fila("td")[4].text.strip()
-                contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, ubigeo_id, departamento,
-                                                                                     provincia, distrito, latitud,
-                                                                                     longitud,
-                                                                                     altitud, tipo, codigo, fecha,
-                                                                                     temperatura_max, temperatura_min,
-                                                                                     humedad, precipitacion)
+                # contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, ubigeo_id, departamento,
+                #                                                                      provincia, distrito, latitud,
+                #                                                                      longitud,
+                #                                                                      altitud, tipo, codigo, fecha,
+                #                                                                      temperatura_max, temperatura_min,
+                #                                                                      humedad, precipitacion)
+                contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, departamento, provincia,
+                                                                                  distrito, latitud, longitud, altitud,
+                                                                                  tipo, codigo, fecha, temperatura_max,
+                                                                                  temperatura_min, humedad,
+                                                                                  precipitacion)
         elif tipo_estacion == "EMA":
             if i > 0:
                 fecha = fila("td")[0].text.strip()
@@ -75,15 +84,22 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
                 humedad = fila("td")[4].text.strip()
                 direccion_viento = fila("td")[5].text.strip()
                 velocidad_viento = fila("td")[6].text.strip()
-                contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, ubigeo_id,
-                                                                                           departamento, provincia,
-                                                                                           distrito, latitud,
-                                                                                           longitud, altitud, tipo,
-                                                                                           codigo,
-                                                                                           fecha, hora, temperatura,
-                                                                                           precipitacion, humedad,
-                                                                                           direccion_viento,
-                                                                                           velocidad_viento)
+                # contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, ubigeo_id,
+                #                                                                            departamento, provincia,
+                #                                                                            distrito, latitud,
+                #                                                                            longitud, altitud, tipo,
+                #                                                                            codigo,
+                #                                                                            fecha, hora, temperatura,
+                #                                                                            precipitacion, humedad,
+                #                                                                            direccion_viento,
+                #                                                                            velocidad_viento)
+                contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, departamento,
+                                                                                        provincia, distrito, latitud,
+                                                                                        longitud, altitud, tipo, codigo,
+                                                                                        fecha, hora, temperatura,
+                                                                                        precipitacion, humedad,
+                                                                                        direccion_viento,
+                                                                                        velocidad_viento)
         i += 1
     return contenido
 

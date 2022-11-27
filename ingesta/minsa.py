@@ -268,7 +268,8 @@ def fechas(semana):
     return fila[1], fila[2]
 
 
-def parseo(archivo, semana, fecha_inicio, fecha_fin):
+# def parseo(archivo, semana, fecha_inicio, fecha_fin):
+def parseo(archivo, semana):
     if semana == 1:
         nro_columnas = 7
     else:
@@ -285,8 +286,6 @@ def parseo(archivo, semana, fecha_inicio, fecha_fin):
                 fila = fila[0:len(fila) - 1]
                 if not (fila in filas_no_permitidas):
                     if len(palabras.split(" ")) > nro_columnas:
-                        if "IMPORTADO" in fila:
-                            print(fila)
                         if "RONTOY" in fila:
                             fila = fila[:-13]
                         for departamento in departamentos_compuestos:
@@ -330,12 +329,23 @@ def parseo(archivo, semana, fecha_inicio, fecha_fin):
                         provincia = provincias_no_coinciden[provincia]
                     if distrito in distritos_no_coinciden:
                         distrito = distritos_no_coinciden[distrito]
-                    nueva_fila = "{},".format(ubigeo(info[0], provincia, distrito))
+                    # nueva_fila = "{},".format(ubigeo(info[0], provincia, distrito))
+                    # for valor in info:
+                    #     nueva_fila += "{},".format(valor)
+                    nueva_fila = ""
+                    i = 0
                     for valor in info:
-                        nueva_fila += "{},".format(valor)
+                        if i == 1:
+                            nueva_fila += "{},".format(provincia)
+                        elif i == 2:
+                            nueva_fila += "{},".format(distrito)
+                        else:
+                            nueva_fila += "{},".format(valor)
+                        i += 1
                     nueva_fila = nueva_fila[0:len(nueva_fila) - 1]
                     fila = nueva_fila
-                    fila += ',{},{}'.format(fecha_inicio, fecha_fin)
+                    # fila += ',{},{}'.format(fecha_inicio, fecha_fin)
+                    fila += ',{}'.format(semana)
                     contenido += fila
                     contenido += "\n"
     except PdfReadError:
@@ -347,8 +357,10 @@ def parseo(archivo, semana, fecha_inicio, fecha_fin):
 def main():
     anio = sys.argv[1]
     semana_final = int(sys.argv[2])
-    contenido = "Ubigeo,Departamento,Provincia,Distrito,SemanasEpidemologicasAnteriores,SemanaEpidemiologicaActual," \
-                "TotalGeneral,Mortalidad,PoblacionEnRiesgo,FechaInicio,FechaFin\n"
+    # contenido = "Ubigeo,Departamento,Provincia,Distrito,SemanasEpidemologicasAnteriores,SemanaEpidemiologicaActual," \
+    #             "TotalGeneral,Mortalidad,PoblacionEnRiesgo,FechaInicio,FechaFin\n"
+    contenido = "Departamento,Provincia,Distrito,SemanasEpidemologicasAnteriores,SemanaEpidemiologicaActual," \
+                "TotalGeneral,Mortalidad,PoblacionEnRiesgo,SemanaEpidemiologica\n"
     for semana in range(1, semana_final + 1):
         url = "https://www.dge.gob.pe/portal/docs/vigilancia/cdistritos/{}/{}/" \
               "IRA%20-%20DEFUNCIONES.pdf".format(anio, str(semana).zfill(2))
@@ -358,8 +370,9 @@ def main():
         archivo_destino = "../recursos/minsa/{}".format(nombre_archivo)
         with open(archivo_destino, 'wb') as f:
             f.write(r.content)
-        fecha_inicio, fecha_fin = fechas(semana)
-        contenido += parseo(archivo_destino, semana, fecha_inicio, fecha_fin)
+        # fecha_inicio, fecha_fin = fechas(semana)
+        # contenido += parseo(archivo_destino, semana, fecha_inicio, fecha_fin)
+        contenido += parseo(archivo_destino, semana)
     archivo = "minsa.csv"
     destino = "../recursos/minsa/{}".format(archivo)
     with open(destino, 'wb') as f:

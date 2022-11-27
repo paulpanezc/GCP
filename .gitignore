@@ -2,5 +2,10 @@
 __pycache__/
 recursos/minsa/*.pdf
 recursos/minsa/minsa.csv
+recursos/minsa/Minsa_limpio.txt
 recursos/senamhi/senamhiCO.csv
+recursos/senamhi/SenamhiCO_limpio.txt
+recursos/senamhi/SenamhiCO_limpio_2.txt
 recursos/senamhi/senamhiEMA.csv
+recursos/senamhi/SenamhiEMA_limpio.txt
+recursos/senamhi/SenamhiEMA_limpio_2.txt

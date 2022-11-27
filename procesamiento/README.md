@@ -2,6 +2,10 @@
 
 > python raw.py
 
-2.- Ejecutar el script para crear el dataset capa_staging
+2.- Ejecutar el script para crear el dataset capa_work
 
-> python staging.py
+> python work.py
+
+3.- Ejecutar el script para crear el dataset capa_analytics
+
+> python analytics.py

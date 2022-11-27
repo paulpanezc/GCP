@@ -2,6 +2,7 @@ import pandas as pd
 
 
 df = pd.read_csv("../recursos/minsa/minsa.csv")
+# df = pd.read_csv("../recursos/minsa/Minsa_limpio.txt", sep="|")
 print(type(df))
 print(df.shape)
 print(df.head())
@@ -18,4 +19,4 @@ print(df['Departamento'])
 print(type(df['Departamento']))
 print(df[['Departamento']])
 print(type(df[['Departamento']]))
-print(df['Departamento'].value_counts(normalize = True, dropna = False)*100)
+print(df['Departamento'].value_counts(normalize=True, dropna=False) * 100)

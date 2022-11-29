@@ -2,6 +2,7 @@
 __pycache__/
 deploy/web_app/web_app/debug.py
 deploy/web_app/web_app/deploy.py
+deploy/web_app/web_app/settings.py
 deploy/web_app/web_app/test.py
 recursos/minsa/*.pdf
 recursos/minsa/minsa.csv

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es-PE">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'home/bootstrap-5.2.3/dist/css/bootstrap.min.css' %}">
+        <title>App Web SENAMHI - MINSA PUNO</title>
+    </head>
+    <body>
+        <form action="">
+            <div class="form-group">
+                <label for="departamento">Departamento: </label>
+                <select class="form-select" aria-label="Escoja un departamento" id="departamento" name="departamento"
+                        required onchange="cargarProvincias()">
+                    {% for departamento in departamentos %}
+                    <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="provincia">Provincia: </label>
+                <select class="form-select" aria-label="Escoja una provincia" id="provincia" name="provincia" required
+                        onchange="cargarDistritos()">
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="distrito">Distrito: </label>
+                <select class="form-select" aria-label="Escoja un distrito" id="distrito" name="distrito" required>
+
+                </select>
+            </div>
+        </form>
+        <script type="text/javascript" src="{% static 'home/bootstrap-5.2.3/dist/js/bootstrap.min.js' %}"></script>
+        <script>
+            function cargarProvincias() {
+                document.getElementById('provincia').innerHTML = '';
+                document.getElementById('distrito').innerHTML = '';
+                fetch('api/provincias/' + document.getElementById('departamento').value)
+                    .then((response) => response.json())
+                    .then(function(data) {
+                        data.forEach(function(element) {
+                            document.getElementById('provincia').options.add(new Option(element.fields['nombre'],
+                                                                                        element.pk));
+                        });
+                    });
+            }
+
+            function cargarDistritos() {
+                document.getElementById('distrito').innerHTML = '';
+                fetch('api/distritos/' + document.getElementById('provincia').value)
+                    .then((response) => response.json())
+                    .then(function(data) {
+                        data.forEach(function(element) {
+                            document.getElementById('distrito').options.add(new Option(element.fields['nombre'],
+                                                                                        element.pk));
+                        });
+                    });
+            }
+        </script>
+    </body>
+</html>

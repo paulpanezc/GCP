@@ -1,9 +1,10 @@
 import pandas as pd
 
 
-df = pd.read_csv("../recursos/senamhi/senamhiCO.csv")
+# df = pd.read_csv("../recursos/senamhi/senamhiCO.csv")
 # df = pd.read_csv("../recursos/senamhi/SenamhiCO_limpio.txt", sep="|")
 # df = pd.read_csv("../recursos/senamhi/SenamhiCO_limpio_2.txt", sep="|")
+df = pd.read_csv("../recursos/senamhi/SenamhiCO_SinEstandarizar.txt", sep="|")
 print(type(df))
 print(df.shape)
 print(df.head())

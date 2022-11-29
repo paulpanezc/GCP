@@ -1,4 +1,5 @@
 beautifulsoup4
+django
 google-cloud-bigquery
 google-cloud-storage
 requests

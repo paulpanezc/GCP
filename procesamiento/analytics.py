@@ -6,19 +6,20 @@ def main():
     big_query.crear_dataset("capa_analytics", "US")
     query = """
         CREATE OR REPLACE TABLE `{}.{}.{}` AS
-        SELECT m.Ubigeo, m.Departamento, m.Provincia, m.Distrito, m.PoblacionEnRiesgo, m.Mortalidad, 
-        m.SemanasEpidemiologicas, m.FechaInicio AS FechaInicioSE, m.FechaFin AS FechaFinSE, 
-        s.CodigoEstacion, s.NombreEstacion, s.TipoEstacion, s.Latitud, s.Longitud, s.Altitud, 
-        ARRAY_AGG(s.Fecha) AS FechaMedicion, ARRAY_AGG(s.Temperatura) AS Temperatura, 
+        SELECT m.Ubigeo, m.Departamento, m.Provincia, m.Distrito, m.Mortalidad, m.PoblacionEnRiesgo,
+        ROUND((m.Mortalidad / 100) * m.PoblacionEnRiesgo) AS Defunciones,
+        m.SemanasEpidemiologicas, m.FechaInicio AS FechaInicioSE, m.FechaFin AS FechaFinSE,
+        s.CodigoEstacion, s.NombreEstacion, s.TipoEstacion, s.Latitud, s.Longitud, CAST(s.Altitud AS INT64) AS Altitud,
+        ARRAY_AGG(s.Fecha) AS FechaMedicion, ARRAY_AGG(s.Temperatura) AS Temperatura,
         ARRAY_AGG(s.Humedad) AS Humedad, ARRAY_AGG(s.Precipitacion) AS Precipitacion
         FROM `{}.{}.{}` m
-        INNER JOIN `{}.{}.{}`s
+        INNER JOIN `{}.{}.{}` s
         ON m.Ubigeo = s.Ubigeo
         WHERE s.Fecha >= m.FechaInicio AND s.Fecha <= m.FechaFin
-        GROUP BY m.Ubigeo, m.Departamento, m.Provincia, m.Distrito, m.PoblacionEnRiesgo, 
-        m.Mortalidad, m.SemanasEpidemiologicas, m.FechaInicio, m.FechaFin, 
+        GROUP BY m.Ubigeo, m.Departamento, m.Provincia, m.Distrito, m.PoblacionEnRiesgo,
+        m.Mortalidad, m.SemanasEpidemiologicas, m.FechaInicio, m.FechaFin,
         s.CodigoEstacion, s.NombreEstacion, s.TipoEstacion, s.Latitud, s.Longitud, s.Altitud
-        ORDER BY m.Mortalidad DESC
+        ORDER BY m.Mortalidad DESC, m.PoblacionEnRiesgo DESC
     """.format(big_query.project, "capa_analytics", "minsa_senamhi", big_query.project, "capa_work",
                "minsa_puno_ubigeo_calendario", big_query.project, "capa_work", "senamhi_CO_EMA_ubigeo")
     big_query.ejecutar_consulta(query)

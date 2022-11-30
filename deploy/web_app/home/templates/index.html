@@ -9,32 +9,76 @@
         <link rel="stylesheet" href="{% static 'home/bootstrap-5.2.3/dist/css/bootstrap.min.css' %}">
         <title>App Web SENAMHI - MINSA PUNO</title>
     </head>
+    <style>
+        #mapa {
+            height: 500px;
+            width: 450px;
+        }
+    </style>
     <body>
-        <form action="">
-            <div class="form-group">
-                <label for="departamento">Departamento: </label>
-                <select class="form-select" aria-label="Escoja un departamento" id="departamento" name="departamento"
-                        required onchange="cargarProvincias()">
-                    {% for departamento in departamentos %}
-                    <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="provincia">Provincia: </label>
-                <select class="form-select" aria-label="Escoja una provincia" id="provincia" name="provincia" required
-                        onchange="cargarDistritos()">
+        <div class="container">
+            <br>
+            <div class="row">
+                <div class="col">
+                    <form>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="departamento">Departamento: </label>
+                            <select class="form-select" aria-label="Escoja un departamento" id="departamento"
+                                    name="departamento" required onchange="cargarProvincias()">
+                                {% for departamento in departamentos %}
+                                <option value="{{ departamento.id }}">{{ departamento.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="provincia">Provincia: </label>
+                            <select class="form-select" aria-label="Escoja una provincia" id="provincia"
+                                    name="provincia" required onchange="cargarDistritos()">
 
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="distrito">Distrito: </label>
-                <select class="form-select" aria-label="Escoja un distrito" id="distrito" name="distrito" required>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="distrito">Distrito: </label>
+                            <select class="form-select" aria-label="Escoja un distrito" id="distrito"
+                                    name="distrito" required onchange="mostrarDistrito()">
 
-                </select>
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="temperatura">Temperatura: </label>
+                            <input type="number" class="form-control" aria-label="Ingrese una temperatura"
+                                   id="temperatura" name="temperatura" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="humedad">Humedad: </label>
+                            <input type="number" class="form-control" aria-label="Ingrese un % de humedad"
+                                   id="humedad" name="humedad" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="precipitacion">Precipitación: </label>
+                            <input type="number" class="form-control" aria-label="Ingrese un valor de precipitacion"
+                                   id="precipitacion" name="precipitacion" required>
+                        </div>
+                        <button type="submit" class="btn btn-success" disabled>PREDECIR</button>
+                    </form>
+                </div>
+                <div class="col">
+                    Altitud: <span id="altitud"></span> msnm.
+                    <br>
+                    Latitud: <span id="latitud"></span>
+                    <br>
+                    Longitud: <span id="longitud"></span>
+                    <br>
+                    <br>
+                    <div id="mapa">
+
+                    </div>
+
+                </div>
             </div>
-        </form>
+        </div>
         <script type="text/javascript" src="{% static 'home/bootstrap-5.2.3/dist/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCl4S74A_L5mBtA551itu5MRes2nvxv6fI"></script>
         <script>
             function cargarProvincias() {
                 document.getElementById('provincia').innerHTML = '';
@@ -59,6 +103,31 @@
                                                                                         element.pk));
                         });
                     });
+            }
+
+            function mostrarDistrito() {
+                fetch('api/distrito/' + document.getElementById('distrito').value)
+                    .then((response) => response.json())
+                    .then(function(data) {
+                        if (data.length == 1) {
+                            data.forEach(function(element) {
+                                document.getElementById('altitud').textContent = element.fields['altitud'];
+                                document.getElementById('latitud').textContent = element.fields['latitud'];
+                                document.getElementById('longitud').textContent = element.fields['longitud'];
+                                latitud = parseFloat(element.fields['latitud']);
+                                longitud = parseFloat(element.fields['longitud']);
+                                mostrarMapa(latitud, longitud);
+                            });
+                        }
+                    });
+            }
+
+            function mostrarMapa(latitud, longitud) {
+                let mapa;
+                mapa = new google.maps.Map(document.getElementById("mapa"), {
+                    center: { lat: latitud, lng: longitud },
+                    zoom: 13,
+                });
             }
         </script>
     </body>

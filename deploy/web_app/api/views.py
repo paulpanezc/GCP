@@ -9,6 +9,11 @@ PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
 class API():
+    def get_distrito(self, request, distrito_id):
+        distrito = Distrito.objects.filter(pk=distrito_id)
+        data = serializers.serialize("json", distrito)
+        return HttpResponse(data, content_type='application/json')
+
     def get_distritos(self, request, provincia_id):
         distritos = Distrito.objects.filter(provincia_id=provincia_id).order_by('nombre')
         data = serializers.serialize("json", distritos)
@@ -42,6 +47,8 @@ class API():
                     nombre_provincia = fila[6]
                     nombre_distrito = fila[7]
                     altitud = fila[14]
+                    latitud = fila[15]
+                    longitud = fila[16]
                     if len(altitud) == 0:
                         altitud = 0
                     departamento = None
@@ -65,7 +72,7 @@ class API():
                             distritos = Distrito.objects.filter(nombre=nombre_distrito, provincia_id=provincia.id)
                             if len(distritos) == 0:
                                 distrito = Distrito(nombre=nombre_distrito, provincia_id=provincia.id, ubigeo=ubigeo,
-                                                    altitud=altitud)
+                                                    altitud=altitud, latitud=latitud, longitud=longitud)
                                 distrito.save()
             i += 1
         return HttpResponse("Ubigeo creado satisfactoriamente.")

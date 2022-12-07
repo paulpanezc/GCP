@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-df = pd.read_csv("../recursos/minsa/minsa.csv")
+df = pd.read_csv("../recursos/minsa/2022/minsa.csv")
 # df = pd.read_csv("../recursos/minsa/Minsa_limpio.txt", sep="|")
 print(type(df))
 print(df.shape)

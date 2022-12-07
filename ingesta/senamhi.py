@@ -8,30 +8,15 @@ from storage import Storage
 estaciones = {
     "CO": {
         "estado": "REAL",
-        # "cabecera": "Estación,Ubigeo,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,"
-        #             "TemperaturaMax(°C),TemperaturaMin(°C),HumedadRelativa(%),Precipitacion(mm/día)\n"
         "cabecera": "Estación,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,"
                     "TemperaturaMax(°C),TemperaturaMin(°C),HumedadRelativa(%),Precipitacion(mm/día)\n"
     },
     "EMA": {
         "estado": "AUTOMATICA",
-        # "cabecera": "Estación,Ubigeo,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,Hora,"
-        #             "Temperatura(°C),Precipitación(mm/hora),Humedad(%),DirecciónDelViento(°),VelocidadDelViento(m/s)\n"
         "cabecera": "Estación,Departamento,Provincia,Distrito,Latitud,Longitud,Altitud,Tipo,Código,Fecha,Hora,"
                     "Temperatura(°C),Precipitación(mm/hora),Humedad(%),DirecciónDelViento(°),VelocidadDelViento(m/s)\n"
     }
 }
-
-
-def ubigeo(departamento, provincia, distrito):
-    with open("../recursos/TB_UBIGEOS.csv", "r", encoding="utf8") as archivo_csv:
-        data = archivo_csv.read()
-    data = list(data.split("\n"))
-    for fila in data:
-        fila = list(fila.split(","))
-        if len(fila) == 17:
-            if fila[4] == departamento and fila[6] == provincia and fila[7] == distrito:
-                return fila[2]
 
 
 def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
@@ -48,7 +33,6 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
     departamento = tabla_datos("tr")[1]("td")[1].text
     provincia = tabla_datos("tr")[1]("td")[3].text
     distrito = tabla_datos("tr")[1]("td")[5].text
-    # ubigeo_id = ubigeo(departamento, provincia, distrito)
     latitud = tabla_datos("tr")[2]("td")[1].text
     longitud = tabla_datos("tr")[2]("td")[3].text
     altitud = tabla_datos("tr")[2]("td")[5].text
@@ -64,12 +48,6 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
                 temperatura_min = fila("td")[2].text.strip()
                 humedad = fila("td")[3].text.strip()
                 precipitacion = fila("td")[4].text.strip()
-                # contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, ubigeo_id, departamento,
-                #                                                                      provincia, distrito, latitud,
-                #                                                                      longitud,
-                #                                                                      altitud, tipo, codigo, fecha,
-                #                                                                      temperatura_max, temperatura_min,
-                #                                                                      humedad, precipitacion)
                 contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, departamento, provincia,
                                                                                   distrito, latitud, longitud, altitud,
                                                                                   tipo, codigo, fecha, temperatura_max,
@@ -84,15 +62,6 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
                 humedad = fila("td")[4].text.strip()
                 direccion_viento = fila("td")[5].text.strip()
                 velocidad_viento = fila("td")[6].text.strip()
-                # contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, ubigeo_id,
-                #                                                                            departamento, provincia,
-                #                                                                            distrito, latitud,
-                #                                                                            longitud, altitud, tipo,
-                #                                                                            codigo,
-                #                                                                            fecha, hora, temperatura,
-                #                                                                            precipitacion, humedad,
-                #                                                                            direccion_viento,
-                #                                                                            velocidad_viento)
                 contenido += "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(estacion, departamento,
                                                                                         provincia, distrito, latitud,
                                                                                         longitud, altitud, tipo, codigo,
@@ -107,12 +76,22 @@ def parseo(tipo_estacion, codigo_estacion, periodo, altitud):
 def main():
     tipo_estacion = sys.argv[1]
     if tipo_estacion in ["CO", "EMA"]:
-        archivo = "senamhi{}.csv".format(tipo_estacion)
-        destino = "../recursos/senamhi/{}".format(archivo)
-        contenido = estaciones[tipo_estacion]["cabecera"]
         anio = sys.argv[2]
         mes_final = int(sys.argv[3])
-        with open("../recursos/senamhi/estaciones{}.csv".format(tipo_estacion)) as archivo_csv:
+        cloud = Storage()
+        bucket = cloud.crear_bucket(cloud.client.project)
+        archivo = "senamhi{}.csv".format(tipo_estacion)
+        # Descomentar para usar en modo local
+        # destino = "../recursos/senamhi/{}/{}".format(anio, archivo)
+        # Uso en Dataproc / PySpark
+        destino = "{}".format(archivo)
+        contenido = estaciones[tipo_estacion]["cabecera"]
+        # Descomentar para usar en modo local
+        # with open("../recursos/senamhi/estaciones{}.csv".format(tipo_estacion)) as archivo_csv:
+        # Uso en Dataproc / PySpark
+        archivo_estaciones = "estaciones{}.csv".format(tipo_estacion)
+        cloud.descargar_archivo(bucket, archivo_estaciones, archivo_estaciones)
+        with open(archivo_estaciones) as archivo_csv:
             contenido_csv = csv.reader(archivo_csv, delimiter=',')
             for fila in contenido_csv:
                 for mes in range(1, mes_final + 1):
@@ -121,8 +100,6 @@ def main():
         f = open(destino, 'wb')
         f.write(contenido.encode())
         f.close()
-        cloud = Storage()
-        bucket = cloud.crear_bucket(cloud.client.project)
         cloud.subir_archivo(bucket, archivo, destino)
     else:
         print("Tipo de estación no admitido.")

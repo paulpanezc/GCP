@@ -17,16 +17,16 @@ def main():
             # big_query.cargar_datos("gs://{}/Minsa_limpio.txt".format(big_query.project), tabla)
         tabla = big_query.crear_tabla(dataset, "senamhiCO")
         if tabla:
-            # big_query.cargar_datos("gs://{}/senamhiCO.csv".format(big_query.project), tabla)
+            big_query.cargar_datos("gs://{}/senamhiCO.csv".format(big_query.project), tabla)
             # big_query.cargar_datos("gs://{}/SenamhiCO_limpio.txt".format(big_query.project), tabla)
             # big_query.cargar_datos("gs://{}/SenamhiCO_limpio_2.txt".format(big_query.project), tabla)
-            big_query.cargar_datos("gs://{}/SenamhiCO_SinEstandarizar.txt".format(big_query.project), tabla)
+            # big_query.cargar_datos("gs://{}/SenamhiCO_SinEstandarizar.txt".format(big_query.project), tabla)
         tabla = big_query.crear_tabla(dataset, "senamhiEMA")
         if tabla:
-            # big_query.cargar_datos("gs://{}/senamhiEMA.csv".format(big_query.project), tabla)
+            big_query.cargar_datos("gs://{}/senamhiEMA.csv".format(big_query.project), tabla)
             # big_query.cargar_datos("gs://{}/SenamhiEMA_limpio.txt".format(big_query.project), tabla)
             # big_query.cargar_datos("gs://{}/SenamhiEMA_limpio_2.txt".format(big_query.project), tabla)
-            big_query.cargar_datos("gs://{}/SenamhiEMA_SinEstandarizar.txt".format(big_query.project), tabla)
+            # big_query.cargar_datos("gs://{}/SenamhiEMA_SinEstandarizar.txt".format(big_query.project), tabla)
 
 
 if __name__ == "__main__":

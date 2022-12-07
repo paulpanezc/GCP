@@ -6,7 +6,25 @@ import requests
 from storage import Storage
 
 
-filas_no_permitidas = ["RIESGOCasos,Notificados,de,DEFUNCIONES,notificadas,por,neumonías,(Intra,y,Extra,Hospitalarias)"
+filas_no_permitidas = ["SE.", "DISTRITOS,-,AÑO,,2021,SE.,52", "01,-,51,52", "01,-,50,51", "DISTRITOS,-,AÑO,,2021,SE.,1",
+                       "01,-,51,52POBLACION,EN,", "DISTRITOS,-,AÑO,,2021,SE.,51", "01,-,50,51POBLACION,EN,",
+                       "DISTRITOS,-,AÑO,,2021,SE.,49", "01,-,48,49POBLACION,EN,", "DISTRITOS,-,AÑO,,2021,SE.,48",
+                       "01,-,47,48POBLACION,EN,", "DISTRITOS,-,AÑO,,2021,SE.,47", "01,-,46,47POBLACION,EN,",
+                       "DISTRITOS,-,AÑO,,2021,SE.,46", "01,-,45,46POBLACION,EN,", "DISTRITOS,-,AÑO,,2021,SE.,45",
+                       "DISTRITOS,-,AÑO,,2021,SE.,44", "DISTRITOS,-,AÑO,,2021,SE.,43", "DISTRITOS,-,AÑO,,2021,SE.,42",
+                       "DISTRITOS,-,AÑO,,2021,SE.,41", "DISTRITOS,-,AÑO,,2021,SE.,40", "DISTRITOS,-,AÑO,,2021,SE.,38",
+                       "DISTRITOS,-,AÑO,,2021,SE.,37", "DISTRITOS,-,AÑO,,2021,SE.,35", "DISTRITOS,-,AÑO,,2021,SE.,32",
+                       "DISTRITOS,-,AÑO,,2021,SE.,31", "DISTRITOS,-,AÑO,,2021,SE.,30", "DISTRITOS,-,AÑO,,2021,SE.,29",
+                       "DISTRITOS,-,AÑO,,2021,SE.,28", "DISTRITOS,-,AÑO,,2021,SE.,27", "DISTRITOS,-,AÑO,,2021,SE.,26",
+                       "DISTRITOS,-,AÑO,,2021,SE.,25", "DISTRITOS,-,AÑO,,2021,SE.,24", "DISTRITOS,-,AÑO,,2021,SE.,23",
+                       "DISTRITOS,-,AÑO,,2021,SE.,22", "DISTRITOS,-,AÑO,,2021,SE.,21", "DISTRITOS,-,AÑO,,2021,SE.,20",
+                       "DISTRITOS,-,AÑO,,2021,SE.,19", "DISTRITOS,-,AÑO,,2021,SE.,18", "DISTRITOS,-,AÑO,,2021,SE.,17",
+                       "DISTRITOS,-,AÑO,,2021,SE.,15", "DISTRITOS,-,AÑO,,2021,SE.,14", "DISTRITOS,-,AÑO,,2021,SE.,13",
+                       "DISTRITOS,-,AÑO,,2021,SE.,11", "DISTRITOS,-,AÑO,,2021,SE.,10", "DISTRITOS,-,AÑO,,2021,SE.,9",
+                       "DISTRITOS,-,AÑO,,2021,SE.,8", "DISTRITOS,-,AÑO,,2021,SE.,7", "DISTRITOS,-,AÑO,,2021,SE.,6",
+                       "DISTRITOS,-,AÑO,,2021,SE.,5", "DISTRITOS,-,AÑO,,2021,SE.,4", "DISTRITOS,-,AÑO,,2021,SE.,3",
+                       "DISTRITOS,-,AÑO,,2021,SE.,2", "01,-,48,49", "01,-,47,48", "01,-,46,47", "01,-,45,46",
+                       "RIESGOCasos,Notificados,de,DEFUNCIONES,notificadas,por,neumonías,(Intra,y,Extra,Hospitalarias)"
                        ",,en,menores,de,5,años", "DEPARTAMENTO,PROVINCIAS,DISTRITOSSEM.,EPIDEMIOLOGICAS,TOTAL,",
                        "GENERALMORTALIDAD", "SEMANA,EPIDEMILOGICA", "DEPARTAMENTO,PROVINCIAS,DISTRITOSTOTAL,",
                        "Elaborado:,Area,de,Gestión,de,Desarrollo,de,Sistemas,de,la,Información,-,CDC",
@@ -55,7 +73,9 @@ filas_no_permitidas = ["RIESGOCasos,Notificados,de,DEFUNCIONES,notificadas,por,n
                        "01,-,41,42POBLACION,EN,", "01,-,41,42", "DISTRITOS,-,AÑO,,2022,SE.,42",
                        "01,-,42,43POBLACION,EN,", "01,-,42,43", "DISTRITOS,-,AÑO,,2022,SE.,43",
                        "01,-,43,44POBLACION,EN,", "01,-,43,44", "DISTRITOS,-,AÑO,,2022,SE.,44",
-                       "01,-,44,45POBLACION,EN,", "01,-,44,45", "DISTRITOS,-,AÑO,,2022,SE.,45"]
+                       "01,-,44,45POBLACION,EN,", "01,-,44,45", "DISTRITOS,-,AÑO,,2022,SE.,45",
+                       "01,-,45,46POBLACION,EN,", "01,-,45,46", "DISTRITOS,-,AÑO,,2022,SE.,46",
+                       "01,-,46,47POBLACION,EN,", "01,-,46,47", "DISTRITOS,-,AÑO,,2022,SE.,47"]
 departamentos_compuestos = {
     "LA,LIBERTAD": "LA LIBERTAD",
     "MADRE,DE,DIOS": "MADRE DE DIOS",
@@ -250,26 +270,7 @@ distritos_no_coinciden = {
 }
 
 
-def ubigeo(departamento, provincia, distrito):
-    with open("../recursos/TB_UBIGEOS.csv", "r", encoding="utf8") as archivo_csv:
-        data = archivo_csv.read()
-    data = list(data.split("\n"))
-    for fila in data:
-        fila = list(fila.split(","))
-        if len(fila) == 17:
-            if fila[4] == departamento and fila[6] == provincia and fila[7] == distrito:
-                return fila[2]
-
-
-def fechas(semana):
-    with open("../recursos/minsa/calendario.csv", "r") as archivo_csv:
-        data = archivo_csv.read()
-    fila = list(list(data.split("\n"))[semana - 1].split(','))
-    return fila[1], fila[2]
-
-
-# def parseo(archivo, semana, fecha_inicio, fecha_fin):
-def parseo(archivo, semana):
+def parseo(archivo, semana, anio):
     if semana == 1:
         nro_columnas = 7
     else:
@@ -329,9 +330,6 @@ def parseo(archivo, semana):
                         provincia = provincias_no_coinciden[provincia]
                     if distrito in distritos_no_coinciden:
                         distrito = distritos_no_coinciden[distrito]
-                    # nueva_fila = "{},".format(ubigeo(info[0], provincia, distrito))
-                    # for valor in info:
-                    #     nueva_fila += "{},".format(valor)
                     nueva_fila = ""
                     i = 0
                     for valor in info:
@@ -344,8 +342,7 @@ def parseo(archivo, semana):
                         i += 1
                     nueva_fila = nueva_fila[0:len(nueva_fila) - 1]
                     fila = nueva_fila
-                    # fila += ',{},{}'.format(fecha_inicio, fecha_fin)
-                    fila += ',{}'.format(semana)
+                    fila += ',{},{}'.format(anio, semana)
                     contenido += fila
                     contenido += "\n"
     except PdfReadError:
@@ -357,24 +354,26 @@ def parseo(archivo, semana):
 def main():
     anio = sys.argv[1]
     semana_final = int(sys.argv[2])
-    # contenido = "Ubigeo,Departamento,Provincia,Distrito,SemanasEpidemologicasAnteriores,SemanaEpidemiologicaActual," \
-    #             "TotalGeneral,Mortalidad,PoblacionEnRiesgo,FechaInicio,FechaFin\n"
     contenido = "Departamento,Provincia,Distrito,SemanasEpidemologicasAnteriores,SemanaEpidemiologicaActual," \
-                "TotalGeneral,Mortalidad,PoblacionEnRiesgo,SemanaEpidemiologica\n"
+                "TotalGeneral,Mortalidad,PoblacionEnRiesgo,Año,SemanaEpidemiologica\n"
     for semana in range(1, semana_final + 1):
         url = "https://www.dge.gob.pe/portal/docs/vigilancia/cdistritos/{}/{}/" \
               "IRA%20-%20DEFUNCIONES.pdf".format(anio, str(semana).zfill(2))
         print(url)
         r = requests.get(url)
         nombre_archivo = "{}-SE{}.pdf".format(anio, semana)
-        archivo_destino = "../recursos/minsa/{}".format(nombre_archivo)
+        # Descomentar para usar en modo local
+        # archivo_destino = "../recursos/minsa/{}/{}".format(anio, nombre_archivo)
+        # Uso en Dataproc / PySpark
+        archivo_destino = "{}".format(nombre_archivo)
         with open(archivo_destino, 'wb') as f:
             f.write(r.content)
-        # fecha_inicio, fecha_fin = fechas(semana)
-        # contenido += parseo(archivo_destino, semana, fecha_inicio, fecha_fin)
-        contenido += parseo(archivo_destino, semana)
+        contenido += parseo(archivo_destino, semana, anio)
     archivo = "minsa.csv"
-    destino = "../recursos/minsa/{}".format(archivo)
+    # Descomentar para usar en modo local
+    # destino = "../recursos/minsa/{}/{}".format(anio, archivo)
+    # Uso en Dataproc / PySpark
+    destino = "{}".format(archivo)
     with open(destino, 'wb') as f:
         f.write(contenido.encode())
     cloud = Storage()
